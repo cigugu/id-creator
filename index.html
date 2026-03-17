@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>分類代碼生成器</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+      background: linear-gradient(135deg, #f6f8fb, #eef3ff);
+      color: #1f2937;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 760px;
+      background: #fff;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e5e7eb;
+    }
+
+    .title {
+      margin: 0 0 8px;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .desc {
+      margin: 0 0 24px;
+      color: #6b7280;
+      font-size: 15px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      background: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: 0.2s ease;
+      cursor: pointer;
+    }
+
+    select:hover {
+      border-color: #93c5fd;
+    }
+
+    select:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+    }
+
+    .result-box {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+
+    .result-title {
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .result {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #111827;
+      word-break: break-all;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      background: #2563eb;
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(37, 99, 235, 0.18);
+    }
+
+    .status {
+      font-size: 14px;
+      color: #64748b;
+      min-height: 21px;
+    }
+
+    .hint {
+      margin-top: 14px;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    @media (max-width: 720px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .title {
+        font-size: 24px;
+      }
+
+      .result {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1 class="title">分類代碼生成器</h1>
+    <p class="desc">選擇 A、B、C 後，自動組合成代碼，並可一鍵複製。</p>
+
+    <div class="grid">
+      <div class="field">
+        <label class="label" for="a">選單 A</label>
+        <select id="a"></select>
+      </div>
+
+      <div class="field">
+        <label class="label" for="b">選單 B</label>
+        <select id="b"></select>
+      </div>
+
+      <div class="field">
+        <label class="label" for="c">選單 C</label>
+        <select id="c"></select>
+      </div>
+    </div>
+
+    <div class="result-box">
+      <div class="result-title">輸出結果</div>
+      <div class="result" id="result">---</div>
+    </div>
+
+    <div class="actions">
+      <button id="copyBtn" type="button">複製結果</button>
+      <div class="status" id="status"></div>
+    </div>
+
+    <div class="hint">格式：A-B-C-</div>
+  </div>
+
+  <script>
+    // 你之後主要只要改這裡
+    const data = {
+      HM: {
+        name: "手作",
+        children: {
+          "01": {
+            name: "編織",
+            children: {
+              "01": { name: "鉤針" },
+              "02": { name: "棒針" }
+            }
+          },
+          "02": {
+            name: "刺繡"
+          }
+        }
+      },
+      AR: {
+        name: "藝術",
+        children: {
+          "01": {
+            name: "繪畫"
+          }
+        }
+      },
+      LG: {
+        name: "語言",
+        children: {
+          "01": {
+            name: "英文"
+          },
+          "02": {
+            name: "德文"
+          }
+        }
+      },
+      WR: {
+        name: "寫作"
+      }
+    };
+
+    const a = document.getElementById("a");
+    const b = document.getElementById("b");
+    const c = document.getElementById("c");
+    const result = document.getElementById("result");
+    const copyBtn = document.getElementById("copyBtn");
+    const status = document.getElementById("status");
+
+    function fill(select, obj, placeholder) {
+      select.innerHTML = `<option value="">${placeholder}</option>`;
+      if (!obj) return;
+
+      for (const key in obj) {
+        const option = document.createElement("option");
+        option.value = key;
+        option.textContent = `${key}｜${obj[key].name}`;
+        select.appendChild(option);
+      }
+    }
+
+    function getResultText() {
+      return `${a.value || ""}-${b.value || ""}-${c.value || ""}-`;
+    }
+
+    function update() {
+      result.textContent = getResultText();
+      status.textContent = "";
+    }
+
+    fill(a, data, "請選擇 A");
+    fill(b, null, "請先選擇 A");
+    fill(c, null, "請先選擇 B");
+    update();
+
+    a.addEventListener("change", () => {
+      const aData = data[a.value];
+      fill(b, aData?.children, aData?.children ? "請選擇 B" : "沒有可選項");
+      fill(c, null, "請先選擇 B");
+      update();
+    });
+
+    b.addEventListener("change", () => {
+      const bData = data[a.value]?.children?.[b.value];
+      fill(c, bData?.children, bData?.children ? "請選擇 C" : "沒有可選項");
+      update();
+    });
+
+    c.addEventListener("change", update);
+
+    copyBtn.addEventListener("click", async () => {
+      const text = getResultText();
+
+      try {
+        await navigator.clipboard.writeText(text);
+        status.textContent = `已複製：${text}`;
+      } catch (err) {
+        status.textContent = "複製失敗，請手動複製";
+      }
+    });
+  </script>
+
+</body>
+</html>
