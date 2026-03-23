@@ -200,44 +200,65 @@
   <script>
     // 你之後主要只要改這裡
     const data = {
-      HM: {
-        name: "手作",
-        children: {
-          "01": {
-            name: "編織",
-            children: {
-              "01": { name: "鉤針" },
-              "02": { name: "棒針" }
-            }
-          },
-          "02": {
-            name: "刺繡"
-          }
-        }
-      },
-      AR: {
-        name: "藝術",
-        children: {
-          "01": {
-            name: "繪畫"
-          }
-        }
-      },
-      LG: {
-        name: "語言",
-        children: {
-          "01": {
-            name: "英文"
-          },
-          "02": {
-            name: "德文"
-          }
-        }
-      },
-      WR: {
-        name: "寫作"
+    AR: {
+      name: "藝術",
+      children: {
+      "01": {
+        name: "繪畫"
       }
-    };
+    }
+  },
+  HM: {
+    name: "手作",
+    children: {
+      "01": {
+        name: "編織",
+        children: {
+          "01": { name: "鉤針" },
+          "02": { name: "棒針" }
+        }
+      },
+      "02": {
+        name: "刺繡",
+        children: {
+          "01": { name: "十字繡" }
+        }
+      }
+    }
+  },
+  LG: {
+    name: "語言",
+    children: {
+      "01": {
+        name: "英文",
+        children: {
+          "01": { name: "單字" },
+          "02": { name: "文法" },
+          "03": { name: "聽" },
+          "04": { name: "說" },
+          "05": { name: "讀" },
+          "06": { name: "寫" },
+          "07": { name: "翻譯" }
+        }
+      },
+      "02": {
+        name: "德文",
+        children: {
+          "01": { name: "單字" },
+          "02": { name: "文法" },
+          "03": { name: "聽" },
+          "04": { name: "說" },
+          "05": { name: "讀" },
+          "06": { name: "寫" },
+          "07": { name: "翻譯" }
+        }
+      }
+    }
+  },
+  WR: {
+    name: "寫作"
+  }
+};
 
     const a = document.getElementById("a");
     const b = document.getElementById("b");
